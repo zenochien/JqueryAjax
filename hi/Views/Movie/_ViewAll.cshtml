@@ -1,70 +1,83 @@
-﻿@model IEnumerable<Jquery_Ajax.Models.Movie>
+﻿@model IEnumerable<Movie>
 
-<div class="col-md-8 offset-md-2">
-    <div asp-controller="Movie" asp-action="GetSearchData" method="GET">
-        <p>
-            <select id="SearchBy">
-                <option id="Id">ID</option>
-                <option id="Genre">Category</option>
-            </select><br /><br />
-            @Html.TextBox("Search")<input type="submit" id="Searchbtn" value="Search" /><br /><br />
-        </p>
-    </div>
+@{
+    ViewBag.Title = "Index";
+    // Layout = null;
+}
 
-    <table class="table">
-        <thead class="thead-light">
+
+<table class="table" id="DataSearch">
+    <thead class="thead-light">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                <a onclick="showInPopup('@Url.Action("AddOrEdit","Movie",null,Context.Request.Scheme)','New Movie')" class="btn btn-success text-white"><i class="fas fa-random"></i> New Movie</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ReleaseDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Genre)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    <a onclick="showInPopup('@Url.Action("AddOrEdit","Movie",null,Context.Request.Scheme)','New Moive')" class="btn btn-success text-white"><i class="fas fa-random"></i> New Movie</a>
-                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a onclick="showInPopup('@Url.Action("AddOrEdit", "Movie", new { id = item.Id }, Context.Request.Scheme)','Edit Movie')" class="btn btn-success text-white"><i class="action-icons"></i>Edit</a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" onsubmit="return jQueryAjaxDelete(this)" class="d-inline">
+                        <input type="hidden" asp-for="@item.Id" />
+                        <input type="submit" value="Delete" class="btn btn-danger" />
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ReleaseDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Genre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price)
-                    </td>
-                    <td>
-                        <div>
-                            <a onclick="showInPopup('@Url.Action("AddOrEdit","Movie",new {id=item.Id},Context.Request.Scheme)','Update Movie')" class="btn btn-info text-white"><i class="fas fa-pencil-alt"></i> Edit</a>
-                            <form asp-action="Delete" asp-route-id="@item.Id" onsubmit="return jQueryAjaxDelete(this)" class="d-inline">
-                                <input type="hidden" asp-for="@item.Id" />
-                                <input type="submit" value="Delete" class="btn btn-danger" />
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
 
+    </tbody>
+</table>
+
+@section Scripts{
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/af-2.3.5/datatables.min.css" />
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/af-2.3.5/datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#DataSearch").DataTable();
+        });
+
+
+    </script>
+}

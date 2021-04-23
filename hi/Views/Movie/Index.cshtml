@@ -1,12 +1,13 @@
-﻿@model IEnumerable<Jquery_Ajax.Models.Movie>
-
+﻿@model IEnumerable<Movie>
 @{
     ViewData["Title"] = "Index";
 }
 
+<h1>Thể Loại Phim</h1>
 
 <div id="view-all">
     @await Html.PartialAsync("_ViewAll", Model)
+    <table class="table" id="DataSearch"></table>
 </div>
 
 
@@ -20,44 +21,22 @@
                 </button>
             </div>
             <div class="modal-body">
-                @await Html.PartialAsync("_ViewAll", Model)
+
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts
-{
-    <script type="text/javascript">
+@section Scripts{
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/af-2.3.5/datatables.min.css" />
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/af-2.3.5/datatables.min.js"></script>
+    <script>
         $(document).ready(function () {
-            $("#Searchbtn").click(function () {
-                var SearchBy = $("#SearchBy").val();
-                var SearchValue = $("#Search").val();
-                var SetData = $("#DataSearch");
-                SetData.html("");
-                $.ajax({
-                    type: "POST",
-                    url: "/Movie/GetSearchData?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue,
-                    contentType: "HTML",
-                    success: function (result) {
-                        if (result.lenght == 0) {
-                            SetData.append('<tr style="color:red"><td colspan="3">No Match Data</td></tr>')
-                        }
-                        else {
-                            $.each(result, function (index, value) {
-                                var Data = "<tr>" +
-                                    "<td>" + value.id + "</td>" +
-                                    "<td>" + value.title + "</td>" +
-                                    "<td>" + value.releasedate + "</td>" +
-                                    "<td>" + value.genre + "</td>" +
-                                    "<td>" + value.price + "</td>" +
-                                    "</tr>";
-                                SetData.append(Data);
-                            });
-                        }
-                    }
-                });
-            });
+            $("#DataSearch").DataTable();
         });
+
+
     </script>
 }

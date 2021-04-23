@@ -1,14 +1,4 @@
-﻿$(function () {
-    $("#loaderbody").addClass('hide');
-
-    $(document).bind('ajaxStart', function () {
-        $("#loaderbody").removeClass('hide');
-    }).bind('ajaxStop', function () {
-        $("#loaderbody").addClass('hide');
-    });
-});
-
-showInPopup = (url, title) => {
+﻿showInPopup = (url, title) => {
     $.ajax({
         type: 'GET',
         url: url,
@@ -23,7 +13,6 @@ showInPopup = (url, title) => {
         }
     })
 }
-
 jQueryAjaxPost = form => {
     try {
         $.ajax({
@@ -54,7 +43,7 @@ jQueryAjaxPost = form => {
 }
 
 jQueryAjaxDelete = form => {
-    if (confirm('Chắc là bạn muốn xóa không?')) {
+    if (confirm('Are you sure to delete this record ?')) {
         try {
             $.ajax({
                 type: 'POST',
@@ -77,4 +66,3 @@ jQueryAjaxDelete = form => {
     //prevent default form submit event
     return false;
 }
-

@@ -1,6 +1,8 @@
 ﻿using Jquery_Ajax.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
+using System.Data.SqlClient;
 
 namespace Jquery_Ajax.DbContent
 {
@@ -20,6 +22,5 @@ namespace Jquery_Ajax.DbContent
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseSqlServer(_config["ConnectionStrings:MvcMovieContext"]); //connection string get by appsetting.json
         }
-
     }
 }

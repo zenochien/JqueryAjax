@@ -16,6 +16,7 @@ namespace Jquery_Ajax.Models
         public string Genre { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
+        public bool Status { get; set; }
     }
 
     public class MovieViewModel

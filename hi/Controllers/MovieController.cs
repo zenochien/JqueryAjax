@@ -20,31 +20,12 @@ namespace Jquery_Ajax.Controllers
         }
 
         // GET: Transaction
-        public async Task<IActionResult> Index(string SearchBy, string SearchValue)
+        public async Task<IActionResult> Index()
         {
 
             return View(await _context.Movies.ToListAsync());
         }
 
-        private async Task<MovieViewModel> PrepareDropDownViewModelAsync(string movieGenre)
-        {
-
-            IQueryable<string> genreQuery = from m in _context.Movies orderby m.Genre select m.Genre;
-
-            var movies = from m in _context.Movies
-                         select m;
-
-            if (!string.IsNullOrEmpty(movieGenre))
-            {
-                movies = movies.Where(x => x.Genre == movieGenre);
-            }
-            var model = new MovieViewModel
-            {
-                Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
-                Movies = await movies.ToListAsync()
-            };
-            return model;
-        }
 
         [NoDirectAccess]
         public async Task<IActionResult> AddOrEdit(int id = 0)
@@ -53,18 +34,18 @@ namespace Jquery_Ajax.Controllers
                 return View(new Movie());
             else
             {
-                var transactionModel = await _context.Movies.FindAsync(id);
-                if (transactionModel == null)
+                var MovieModel = await _context.Movies.FindAsync(id);
+                if (MovieModel == null)
                 {
                     return NotFound();
                 }
-                return View(transactionModel);
+                return View(MovieModel);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price")] Movie movie)
+        public async Task<IActionResult> AddOrEdit(int id, [Bind("Title,ReleaseDate,Genre,Price")] Movie movie)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +54,6 @@ namespace Jquery_Ajax.Controllers
                 {
                     _context.Add(movie);
                     await _context.SaveChangesAsync();
-
                 }
                 //Update
                 else
@@ -85,7 +65,7 @@ namespace Jquery_Ajax.Controllers
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!TransactionModelExists(movie.Id))
+                        if (!MovieModelExists(movie.Id))
                         { return NotFound(); }
                         else
                         { throw; }
@@ -96,7 +76,6 @@ namespace Jquery_Ajax.Controllers
             return Json(new { isValid = false, html = await Helper.RenderRazorViewToStringAsync(this, "AddOrEdit", movie) });
         }
 
-        // GET: Transaction/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -104,55 +83,36 @@ namespace Jquery_Ajax.Controllers
                 return NotFound();
             }
 
-            var transactionModel = await _context.Movies
+            var movie = await _context.Movies
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (transactionModel == null)
+            if (movie == null)
             {
                 return NotFound();
             }
 
-            return View(transactionModel);
+            return View(movie);
         }
 
-        // POST: Transaction/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var transactionModel = await _context.Movies.FindAsync(id);
-            _context.Movies.Remove(transactionModel);
+            var movie = await _context.Movies.FindAsync(id);
+            _context.Movies.Remove(movie);
             await _context.SaveChangesAsync();
             return Json(new { html = await Helper.RenderRazorViewToStringAsync(this, "_ViewAll", _context.Movies.ToList()) });
         }
 
-        private bool TransactionModelExists(int id)
+
+        private bool MovieModelExists(int id)
         {
             return _context.Movies.Any(e => e.Id == id);
         }
-        public IActionResult GetSelect()
+
+        public IActionResult GetSearchData(string SearchBy, string SearchValue)
         {
-            var productsList = (from product in _context.Movies
-                                select new SelectListItem()
-                                {
-                                    Text = product.Genre,
-                                    Value = product.Id.ToString(),
-                                }).ToList();
-
-            productsList.Insert(0, new SelectListItem()
-            {
-                Text = "----Select----",
-                Value = string.Empty
-            });
-
-            return Json(productsList);
-        }
-        //form vì trả vê action index 
-
-        public async Task<IActionResult> GetSearchDataAsync(string SearchBy, string SearchValue)
-        {
-            var movies = await _context.Movies.ToListAsync();
-
-            List<Movie> movie = new List<Movie>();
+            var movies = from m in _context.Movies select m;
+            IEnumerable<Movie> movie = new List<Movie>();
             if (SearchBy == "ID")
             {
                 try
@@ -164,14 +124,13 @@ namespace Jquery_Ajax.Controllers
                 {
                     Console.WriteLine("{0} Is Not A ID ", SearchValue);
                 }
-                return View(movie);
-                //return Json(movie);
+                //return View(movie);
+                return Json(movie);
             }
             else
             {
                 movie = movies.Where(x => x.Genre.StartsWith(SearchValue) || SearchValue == null).ToList();
             }
-            //return View(movies);
             return Json(movies);
         }
     }

@@ -10,18 +10,19 @@
         <form asp-action="AddOrEdit" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Status" />
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="Title" class="control-label"></label>
-                        <input asp-for="Title" class="form-control" />
+                        <input asp-for="Title" class="form-control" id="Title" />
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="ReleaseDate" class="control-label"></label>
-                        <input asp-for="ReleaseDate" class="form-control" />
+                        <input asp-for="ReleaseDate" class="form-control" id="ReleaseDate" />
                         <span asp-validation-for="ReleaseDate" class="text-danger"></span>
                     </div>
                 </div>
@@ -30,7 +31,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="Genre" class="control-label"></label>
-                        <input asp-for="Genre" class="form-control" />
+                        <input asp-for="Genre" class="form-control" id="Genre" />
                         <span asp-validation-for="Genre" class="text-danger"></span>
                     </div>
                 </div>
@@ -43,18 +44,20 @@
                                     <i class="fas fa-dollar-sign"></i>
                                 </div>
                             </div>
-                            <input asp-for="Price" class="form-control" />
+                            <input asp-for="Price" class="form-control" id="Price" />
                         </div>
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-6 offset-md-3">
-                    <input type="submit" value="Save" class="btn btn-primary btn-block" asp-action="_ViewAll"/>
-                </div>
+                <input type="submit" value="Submit" class="btn btn-primary btn-block" />
+                <a asp-action="Index" class="btn btn-secondary btn-block"><i class="fa fa-table"></i> Back</a>
             </div>
         </form>
     </div>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
